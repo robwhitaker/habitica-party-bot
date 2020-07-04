@@ -1,0 +1,42 @@
+cabal-version:       2.2
+
+name:                habitica-party-bot
+version:             0.1.0.0
+synopsis:            A Discord bot for my Habitica party
+-- description:
+-- bug-reports:
+license:             BSD-3-Clause
+license-file:        LICENSE
+author:              Rob Whitaker
+maintainer:          dev@robwhitaker.com
+-- copyright:
+-- category:
+build-type:          Simple
+extra-source-files:  CHANGELOG.md
+
+executable habitica-party-bot
+  main-is:             Main.hs
+  default-extensions:  OverloadedStrings
+                     , LambdaCase
+  mixins:              base hiding (Prelude)
+                     , relude (Relude as Prelude)
+  ghc-options:         -Wall
+                       -fwarn-incomplete-uni-patterns
+                       -fwarn-tabs
+                       -fwarn-incomplete-record-updates
+                       -fno-warn-missing-signatures
+                       -fno-warn-type-defaults
+                       -Werror
+                       -Wwarn=unused-imports
+                       -Wwarn=unused-local-binds
+                       -Wwarn=unused-matches
+                       -Wwarn=unused-do-bind
+
+                       -threaded
+                       -O2
+  -- other-modules:
+  build-depends:       base >=4.12 && <4.13
+                     , habitica-hs
+                     , relude
+  hs-source-dirs:      app, src
+  default-language:    Haskell2010

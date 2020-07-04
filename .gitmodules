@@ -1,0 +1,3 @@
+[submodule "lib/habitica-hs"]
+	path = lib/habitica-hs
+	url = git@github.com:robwhitaker/habitica-hs.git
