@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module Bot where
 
 import           Control.Concurrent (forkIO)

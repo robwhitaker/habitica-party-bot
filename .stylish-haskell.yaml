@@ -227,8 +227,35 @@ newline: native
 #
 # No language extensions are enabled by default.
 language_extensions:
-    - LambdaCase
-    - DataKinds
-    - TypeOperators
-    - FlexibleContexts # stylish-haskell bug, see jaspervdj/stylish-haskell#230
-    - MultiParamTypeClasses # stylish-haskell bug, see jaspervdj/stylish-haskell#103 and haskell-suite/haskell-src-exts#304
+  - BangPatterns
+  - ConstraintKinds
+  - DataKinds
+  - DefaultSignatures
+  - DeriveAnyClass
+  - DeriveDataTypeable
+  - DeriveGeneric
+  - DerivingStrategies
+  - DerivingVia
+  - ExplicitNamespaces
+  - FlexibleContexts
+  - FlexibleInstances
+  - FunctionalDependencies
+  - GADTs
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - KindSignatures
+  - LambdaCase
+  - MultiParamTypeClasses
+  - MultiWayIf
+  - NamedFieldPuns
+  - NoImplicitPrelude
+  - OverloadedStrings
+  - QuasiQuotes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TemplateHaskell
+  - TupleSections
+  - TypeApplications
+  - TypeFamilies
+  - ViewPatterns

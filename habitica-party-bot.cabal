@@ -18,21 +18,30 @@ executable habitica-party-bot
   main-is:             Main.hs
   default-extensions:  OverloadedStrings
                      , LambdaCase
-                     , DataKinds
-                     , TypeOperators
+                     , RecordWildCards
+                     , ScopedTypeVariables
+                     , TupleSections
+                     , TypeApplications
   mixins:              base hiding (Prelude)
                      , relude (Relude as Prelude)
   ghc-options:         -Wall
-                       -fwarn-incomplete-uni-patterns
-                       -fwarn-tabs
-                       -fwarn-incomplete-record-updates
-                       -fno-warn-missing-signatures
-                       -fno-warn-type-defaults
+                       -Wincomplete-uni-patterns
+                       -Wincomplete-record-updates
+                       -Wcompat
+                       -Widentities
+                       -Wredundant-constraints
+                       -Wpartial-fields
+                       -Wtabs
                        -Werror
+                       -Wwarn=missing-signatures
+                       -Wwarn=type-defaults
                        -Wwarn=unused-imports
                        -Wwarn=unused-local-binds
                        -Wwarn=unused-matches
                        -Wwarn=unused-do-bind
+
+                       -fhide-source-paths
+                       -freverse-errors
 
                        -threaded
                        -O2
