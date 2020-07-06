@@ -18,6 +18,8 @@ executable habitica-party-bot
   main-is:             Main.hs
   default-extensions:  OverloadedStrings
                      , LambdaCase
+                     , DataKinds
+                     , TypeOperators
   mixins:              base hiding (Prelude)
                      , relude (Relude as Prelude)
   ghc-options:         -Wall
@@ -34,12 +36,17 @@ executable habitica-party-bot
 
                        -threaded
                        -O2
-  -- other-modules:
-  build-depends:       base
-                     , calamity
+  other-modules:       Bot
+                     , Types
+                     , WebServer
+  build-depends:       aeson
+                     , base
+                     , discord-haskell
                      , habitica-hs
                      , polysemy
                      , relude
                      , servant-server
+                     , stm
+                     , warp
   hs-source-dirs:      app, src
   default-language:    Haskell2010

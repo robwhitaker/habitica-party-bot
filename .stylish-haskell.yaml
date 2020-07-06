@@ -228,5 +228,7 @@ newline: native
 # No language extensions are enabled by default.
 language_extensions:
     - LambdaCase
+    - DataKinds
+    - TypeOperators
     - FlexibleContexts # stylish-haskell bug, see jaspervdj/stylish-haskell#230
     - MultiParamTypeClasses # stylish-haskell bug, see jaspervdj/stylish-haskell#103 and haskell-suite/haskell-src-exts#304

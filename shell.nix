@@ -8,16 +8,9 @@ let
       haskellPackages = super.haskellPackages.override {
         overrides = hself: hsuper: {
           habitica-hs = hself.callPackage ./lib/habitica-hs {};
-
-          # Overridden with `doCheck = false;`
-
-          # the tests on these two rely on HTF which fails to compile
-          # on GHC 8.8.3
-          stm-containers = hself.callPackage ./nix/stm-containers.nix {};
-          list-t = hself.callPackage ./nix/list-t.nix {};
-
-          # the tests on this just plain fail
-          wreq-patchable = hself.callPackage ./nix/wreq-patchable.nix {};
+          servant-server = hself.servant-server_0_17;
+          servant = hself.servant_0_17;
+          req = hself.callPackage ./nix/req_3.1.0.nix {};
         };
       };
     })
