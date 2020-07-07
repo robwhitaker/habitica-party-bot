@@ -5,6 +5,8 @@ import           System.Environment (lookupEnv)
 import           Data.Aeson         (eitherDecodeFileStrict')
 
 import           Bot                (runBot)
+import           Types
+import           Utils.Logging      (runWithBackgroundLogger)
 
 data Mode
     = Dev
@@ -21,6 +23,11 @@ main = do
                     Dev  -> "config.json"
                     Prod -> "/etc/habitica-party-bot/config.json"
               )
+    let LocalConfig {..} =
+            case botEnv of
+                Dev  -> configDev config
+                Prod -> configProd config
     discordToken <- maybe (error "Missing HPARTYBOT_DISCORD_TOKEN environment variable") toText
                 <$> lookupEnv "HPARTYBOT_DISCORD_TOKEN"
-    runBot discordToken config
+    runWithBackgroundLogger configLogFile $ \logger ->
+        runBot discordToken (Env configPort configSystemMessagesChannelId logger)

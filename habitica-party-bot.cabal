@@ -47,15 +47,21 @@ executable habitica-party-bot
                        -O2
   other-modules:       Bot
                      , Types
+                     , Utils.Logging
                      , WebServer
   build-depends:       aeson
                      , base
+                     , chronos
+                     , co-log
+                     , directory
                      , discord-haskell
+                     , filepath
                      , habitica-hs
                      , polysemy
                      , relude
                      , servant-server
                      , stm
+                     , text
                      , warp
   hs-source-dirs:      app, src
   default-language:    Haskell2010

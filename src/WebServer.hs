@@ -3,6 +3,9 @@
 
 module WebServer where
 
+import           Colog                    (LogAction, Message)
+import qualified Colog                    as Colog
+
 import           Discord                  (DiscordHandle)
 import qualified Discord
 import qualified Discord.Requests         as Discord (ChannelRequest (CreateMessage))
@@ -22,32 +25,38 @@ type API
         :> ReqBody '[JSON] WebhookMessage
         :> PostNoContent
 
-server :: DiscordHandle -> ChannelId -> Server API
-server handle chanId =
+server :: DiscordHandle -> ChannelId -> LogAction IO Message -> Server API
+server handle chanId logger =
     groupChatReceived
   where
+    logInfo = Colog.usingLoggerT logger . Colog.logInfo
+    logError = Colog.usingLoggerT logger . Colog.logError
+
     groupChatReceived :: WebhookMessage -> Handler NoContent
     groupChatReceived (GroupChatReceived GCR {..}) = do
         let MessageChat {..} = gcrChat
         case mcSender of
             SystemMessage -> do
                 liftIO $ do
-                    putStrLn "Received a system message; sending to Discord"
+                    logInfo $ "Received a system message: \"" <> mcText <> "\""
+                    logInfo "Sending to Discord..."
                     result <- Discord.restCall handle $ Discord.CreateMessage chanId mcText
                     case result of
-                        Right _  -> putStrLn "Success!"
-                        Left err -> putStrLn $ "Err: " <> show err
-            _ -> liftIO $ putStrLn "Received a user message; ignoring"
+                        Right _  -> logInfo "Success!"
+                        Left err -> logError $ "Err: " <> show err
+            _ -> liftIO $ logInfo "Received a user message; ignoring"
         return Servant.NoContent
     groupChatReceived _ = do
-        liftIO $ putStrLn "Received non-groupChatReceived webhook; ignoring"
+        liftIO $ logInfo "Received non-groupChatReceived webhook; ignoring"
         return Servant.NoContent
 
-serverApp ::  DiscordHandle -> ChannelId -> Application
-serverApp handle chanId =
-    Servant.serve (Proxy :: Proxy API) (server handle chanId)
+serverApp ::  DiscordHandle -> ChannelId -> LogAction IO Message -> Application
+serverApp handle chanId logger =
+    Servant.serve (Proxy :: Proxy API) (server handle chanId logger)
 
-runServer :: Int -> ChannelId -> DiscordHandle -> IO ()
-runServer port chanId handle = do
-    putStrLn $ "Running message listener server on port " <> show port
-    Warp.run port (serverApp handle chanId)
+runServer :: Int -> ChannelId -> LogAction IO Message -> DiscordHandle -> IO ()
+runServer port chanId logger handle = do
+    logInfo $ "Running message listener server on port " <> show port
+    Warp.run port (serverApp handle chanId logger)
+  where
+    logInfo = Colog.usingLoggerT logger . Colog.logInfo
