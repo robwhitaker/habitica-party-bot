@@ -62,6 +62,7 @@ executable habitica-party-bot
                      , servant-server
                      , stm
                      , text
+                     , uuid
                      , warp
   hs-source-dirs:      app, src
   default-language:    Haskell2010
