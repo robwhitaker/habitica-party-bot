@@ -53,6 +53,7 @@ executable habitica-party-bot
                      , base
                      , chronos
                      , co-log
+                     , containers
                      , directory
                      , discord-haskell
                      , filepath

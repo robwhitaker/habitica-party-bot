@@ -4,6 +4,7 @@ import qualified Colog
 
 import           Control.Concurrent             (forkIO)
 
+import qualified Data.Map.Strict                as Map
 import qualified Data.Text                      as T
 
 import           Discord
@@ -55,7 +56,48 @@ handleMessageCreate Message {..} handle Env {..} = do
                 case result of
                     Right _  -> logInfo "Success!"
                     Left err -> logError $ "Err: " <> show err
+
+    when ("!questProgress" `T.isPrefixOf` messageText) $ do
+        logInfo "Processing !questProgress request"
+        eitherMembers <- responseBody <$>
+            runHabiticaRequest envHabiticaAuth defaultHabiticaHttpConfig (getGroupMembers GroupParty)
+        case eitherMembers of
+            Left err -> do
+                logError $ show err
+            Right members -> do
+                let
+                    questProgs =
+                        fmap (\m ->
+                            let
+                                username = palUsername $ pauthLocal $ memberAuth m
+                                questProg = questProgress $ partyQuest $ memberParty m
+                                bossQuestMsg =
+                                    username
+                                    <> " has "
+                                    <> show (qpUp questProg)
+                                    <> " pending damage"
+                            in
+                            case qpCollect questProg of
+                                Nothing -> -- boss quest
+                                    bossQuestMsg
+                                Just collect ->
+                                    if Map.null collect
+                                    then bossQuestMsg -- boss quest
+                                    else let -- collection quest
+                                        collected =
+                                            Map.foldlWithKey' (\acc item n ->
+                                                acc <> " " <> item <> "(" <> show n <> ")"
+                                            ) "" collect
+                                    in
+                                    username
+                                    <> " has collected: "
+                                    <> collected
+                        ) members
+                    msg = mconcat $ intersperse "\n" $ "Quest progress:" : questProgs
+                result <- Discord.restCall handle $ Discord.CreateMessage messageChannel msg
+                case result of
+                    Right _  -> logInfo "Success!"
+                    Left err -> logError $ "Err: " <> show err
   where
-    logDebug = Colog.usingLoggerT envLogger . Colog.logDebug
     logInfo = Colog.usingLoggerT envLogger . Colog.logInfo
     logError = Colog.usingLoggerT envLogger . Colog.logError
